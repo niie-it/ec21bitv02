@@ -62,5 +62,18 @@ namespace MyEStore.Controllers
 			HttpContext.Session.Set(CART_KEY, cart);
 			return RedirectToAction("Index");
 		}
-	}
+
+		public IActionResult RemoveCartItem(int id)
+		{
+            var cart = CartItems;
+            var cartItem = cart.SingleOrDefault(p => p.MaHh == id);
+            if (cartItem != null)
+            {
+				cart.Remove(cartItem);
+				HttpContext.Session.Set(CART_KEY, cart);
+            }
+			return RedirectToAction("Index");
+        }
+
+    }
 }

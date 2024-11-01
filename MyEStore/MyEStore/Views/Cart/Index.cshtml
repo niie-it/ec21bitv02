@@ -32,7 +32,7 @@
 					</td>
 					<td>@item.ThanhTien</td>
 					<td>
-						<a href="#">Xóa</a>
+						<a asp-action="RemoveCartItem" asp-route-id="@item.MaHh" class="btn btn-danger">Xóa</a>
 					</td>
 				</tr>
 			}
