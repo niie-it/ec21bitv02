@@ -7,20 +7,40 @@
 	.hh-box {
 		width: 250px;
 		height: 300px;
-		border: 1px solid blue; display:inline-block;
-		text-align:center; position:relative;
+		border: 1px solid blue;
+		display: inline-block;
+		text-align: center;
+		position: relative;
 		margin: 5px;
 	}
-	.hh-box-img{width:80%; height:80%;}
-	.hh-box-mua{position:absolute; right: 5px; bottom: 5px;}
-	.hh-box-gia{position:absolute; left: 5px; bottom: 5px; font-weight:bolder; font-size: large;}
+
+	.hh-box-img {
+		width: 80%;
+		height: 80%;
+	}
+
+	.hh-box-mua {
+		position: absolute;
+		right: 5px;
+		bottom: 5px;
+	}
+
+	.hh-box-gia {
+		position: absolute;
+		left: 5px;
+		bottom: 5px;
+		font-weight: bolder;
+		font-size: large;
+	}
 </style>
 <h1>Danh sách Hàng hóa</h1>
 <div class="container">
 	@foreach (var hh in Model)
 	{
 		<div class="hh-box">
-			<img src="~/Hinh/HangHoa/@hh.Hinh" alt="@hh.TenHh" class="hh-box-img" />
+			<a asp-action="Detail" asp-route-id="@hh.MaHh">
+				<img src="~/Hinh/HangHoa/@hh.Hinh" alt="@hh.TenHh" class="hh-box-img" />
+			</a>
 			<a class="btn btn-primary hh-box-mua" asp-controller="Cart" asp-action="AddToCart" asp-route-id="@hh.MaHh">MUA</a>
 			<div class="hh-box-gia">@hh.DonGia $</div>
 		</div>
