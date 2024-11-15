@@ -8,6 +8,7 @@ namespace MyEStore.Controllers
 	{
 		const string CART_KEY = "MY_CART";
 		private readonly MyeStoreContext _ctx;
+		private readonly PaypalClient _paypalClient;
 
 		public List<CartItem> CartItems
 		{
@@ -22,13 +23,15 @@ namespace MyEStore.Controllers
 			}
 		}
 
-		public CartController(MyeStoreContext ctx)
+		public CartController(MyeStoreContext ctx, PaypalClient paypalClient)
 		{
 			_ctx = ctx;
+			_paypalClient = paypalClient;
 		}
 
 		public IActionResult Index()
 		{
+			ViewBag.PaypalClientId = _paypalClient.ClientId;
 			return View(CartItems);
 		}
 
