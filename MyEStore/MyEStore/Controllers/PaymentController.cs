@@ -4,6 +4,7 @@ using MyEStore.Models;
 
 namespace MyEStore.Controllers
 {
+	[Authorize]
 	public class PaymentController : Controller
 	{
 		private readonly PaypalClient _paypalClient;
@@ -15,7 +16,8 @@ namespace MyEStore.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			ViewBag.PaypalClientId = _paypalClient.ClientId;
+			return View(CartItems);
 		}
 
 		const string CART_KEY = "MY_CART";
@@ -65,11 +67,14 @@ namespace MyEStore.Controllers
 			{
 				var response = await _paypalClient.CaptureOrder(orderId);
 
-				var reference = response.purchase_units[0].reference_id;
+				//nhớ kiểm tra status complete
+				// response.status == "COMPLETED"	
+				var reference = response.purchase_units[0].reference_id;//mã đơn hàng mình tạo ở trên
 
 				// Put your logic to save the transaction here
 				// You can use the "reference" variable as a transaction key
-				// Lưu đơn hàng vô database
+				// 1. Tạo và Lưu đơn hàng vô database
+				// TransactionId của Seller: response.payments.captures[0].id
 
 				return Ok(response);
 			}
