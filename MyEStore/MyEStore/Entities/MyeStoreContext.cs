@@ -193,7 +193,7 @@ public partial class MyeStoreContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValue("Airline");
             entity.Property(e => e.DiaChi).HasMaxLength(60);
-            entity.Property(e => e.GhiChu).HasMaxLength(50);
+            entity.Property(e => e.GhiChu).HasMaxLength(255);
             entity.Property(e => e.HoTen).HasMaxLength(50);
             entity.Property(e => e.MaKh)
                 .HasMaxLength(20)

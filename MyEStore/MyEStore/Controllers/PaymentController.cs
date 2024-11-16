@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyEStore.Entities;
 using MyEStore.Models;
+using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MyEStore.Controllers
 {
@@ -8,10 +11,12 @@ namespace MyEStore.Controllers
 	public class PaymentController : Controller
 	{
 		private readonly PaypalClient _paypalClient;
+		private readonly MyeStoreContext _ctx;
 
-		public PaymentController(PaypalClient paypalClient)
+		public PaymentController(PaypalClient paypalClient, MyeStoreContext ctx)
 		{
 			_paypalClient = paypalClient;
+			_ctx = ctx;
 		}
 
 		public IActionResult Index()
@@ -68,15 +73,49 @@ namespace MyEStore.Controllers
 				var response = await _paypalClient.CaptureOrder(orderId);
 
 				//nhớ kiểm tra status complete
-				// response.status == "COMPLETED"	
-				var reference = response.purchase_units[0].reference_id;//mã đơn hàng mình tạo ở trên
+				if (response.status == "COMPLETED")
+				{
+					var reference = response.purchase_units[0].reference_id;//mã đơn hàng mình tạo ở trên
 
-				// Put your logic to save the transaction here
-				// You can use the "reference" variable as a transaction key
-				// 1. Tạo và Lưu đơn hàng vô database
-				// TransactionId của Seller: response.payments.captures[0].id
+					// Put your logic to save the transaction here
+					// You can use the "reference" variable as a transaction key
+					// 1. Tạo và Lưu đơn hàng vô database
+					// TransactionId của Seller: response.payments.captures[0].id
+					var hoaDon = new HoaDon
+					{
+						MaKh = User.FindFirstValue("UserId"),
+						NgayDat = DateTime.Now,
+						HoTen = User.Identity.Name,
+						DiaChi = "N/A",//tự update
+						CachThanhToan = "Paypal",
+						CachVanChuyen = "N/A",
+						MaTrangThai = 0, //Mới đặt hàng
+						GhiChu = $"reference_id={reference}, transactionId={response.purchase_units[0].payments.captures[0].id}"
+					};
+					_ctx.Add(hoaDon);
+					_ctx.SaveChanges();
+					foreach (var item in CartItems)
+					{
+						var cthd = new ChiTietHd
+						{
+							MaHd = hoaDon.MaHd,
+							MaHh = item.MaHh,
+							DonGia = item.DonGia,
+							SoLuong = item.SoLuong,
+							GiamGia = 1
+						};
+						_ctx.Add(cthd);
+					}
+					_ctx.SaveChanges();
+					//2. Xóa session giỏ hàng
+					HttpContext.Session.Set(CART_KEY, new List<CartItem>());
 
-				return Ok(response);
+					return Ok(response);
+				}
+				else
+				{
+					return BadRequest(new { Message = "Có lỗi thanh toán" });
+				}
 			}
 			catch (Exception e)
 			{
