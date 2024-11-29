@@ -38,7 +38,7 @@
 	@foreach (var hh in Model)
 	{
 		<div class="hh-box">
-			<a asp-action="Detail" asp-route-id="@hh.MaHh">
+			<a href="~/san-pham/@hh.TenAlias">
 				<img src="~/Hinh/HangHoa/@hh.Hinh" alt="@hh.TenHh" class="hh-box-img" />
 			</a>
 			<a class="btn btn-primary hh-box-mua" asp-controller="Cart" asp-action="AddToCart" asp-route-id="@hh.MaHh">MUA</a>

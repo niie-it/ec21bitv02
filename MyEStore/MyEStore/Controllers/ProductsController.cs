@@ -13,9 +13,20 @@ namespace MyEStore.Controllers
             _ctx = ctx;
         }
 
-        public IActionResult Detail(int id)
+        //public IActionResult Detail(int id)
+        //{
+        //    var hangHoa = _ctx.HangHoas.SingleOrDefault(p => p.MaHh == id);
+        //    if (hangHoa == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(hangHoa);
+        //}
+
+        [HttpGet("san-pham/{slug}")]
+        public IActionResult Detail(string slug)
         {
-            var hangHoa = _ctx.HangHoas.SingleOrDefault(p => p.MaHh == id);
+            var hangHoa = _ctx.HangHoas.SingleOrDefault(p => p.TenAlias == slug);
             if (hangHoa == null)
             {
                 return NotFound();
@@ -35,6 +46,7 @@ namespace MyEStore.Controllers
             {
                 MaHh = hh.MaHh,
                 TenHh = hh.TenHh,
+                TenAlias = hh.TenAlias,
                 DonGia = hh.DonGia ?? 0,
                 Hinh = hh.Hinh
             });
