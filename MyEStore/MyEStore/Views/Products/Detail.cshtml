@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Detail";
 }
-
+@section MyStyles{
+    <meta property="og:title" content="@Model.TenHh" />
+    <meta property="og:description" content="@Model.TenHh - @Model.MoTaDonVi - @Model.DonGia$" />
+    <meta property="og:url" content="https://localhost:7238/Products/Detail/@Model.MaHh" />
+    <meta property="og:image" content="https://localhost:7238/Hinh/HangHoa/@Model.Hinh" />
+}
 <h1>@Model.TenHh</h1>
 
 <div>
