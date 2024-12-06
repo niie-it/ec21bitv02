@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using MyEStore.Entities;
 using MyEStore.Models;
 using System.Security.Claims;
+using System.Text;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Collections.Generic;
 
 namespace MyEStore.Controllers
 {
@@ -14,6 +18,16 @@ namespace MyEStore.Controllers
         public CustomerController(MyeStoreContext ctx)
         {
             _ctx = ctx;
+        }
+
+        public IActionResult ExportCSV()
+        {
+            var sb = new List<string>();
+            sb.Add("Email Address,First Name,Last Name,Address,Phone Number");
+            var dskh = _ctx.KhachHangs.Select(kh => 
+                $"\"{kh.Email}\",\"{kh.MaKh}\",\"{kh.HoTen}\",\"{kh.DiaChi}\",\"{kh.DienThoai}\"").ToList();
+            sb.AddRange(dskh);
+            return File(Encoding.UTF8.GetBytes(string.Join("\r\n", sb)), "text/csv", "khachhang.csv");
         }
 
         [HttpGet]
